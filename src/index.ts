@@ -3,7 +3,7 @@ import cors from 'cors'
 import { router } from './routes/Router.ts'
 import type {Express, Request, Response} from "express"
 
-const port = const port = process.env.PORT ?? 8000
+const port = process.env.PORT ?? 8000
 const app: Express = express()
 app.use(express.json())
 app.use(cors())
