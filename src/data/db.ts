@@ -4,15 +4,18 @@ const db = new DatabaseSync('clients.db');
 
 db.exec(`CREATE TABLE IF NOT EXISTS clients (
     id INTEGER PRIMARY KEY,
+    userId INTEGER NOT NULL,
     name TEXT NOT NULL,
     email TEXT,
     phone TEXT,
     taxId TEXT,
+    statId TEXT,
     owed REAL DEFAULT 0
 )`);
 
 db.exec(`CREATE TABLE IF NOT EXISTS invoices (
     id INTEGER PRIMARY KEY,
+    userId INTEGER NOT NULL,
     invoiceNumber TEXT NOT NULL,
     clientId INTEGER NOT NULL,
     date TEXT,
@@ -29,6 +32,20 @@ db.exec(`CREATE TABLE IF NOT EXISTS invoice_items (
     qty INTEGER,
     price REAL,
     FOREIGN KEY (invoiceId) REFERENCES invoices(id) ON DELETE CASCADE
+)`);
+
+db.exec(`CREATE TABLE IF NOT EXISTS users (
+    username TEXT NOT NULL,
+    password TEXT NOT NULL
+    )`)
+
+db.exec(`CREATE TABLE IF NOT EXISTS profile (
+    userId INTEGER PRIMARY KEY,
+    businessName TEXT,
+    address TEXT,
+    phone TEXT,
+    nif TEXT,
+    nis TEXT
 )`);
 
 export default db;

@@ -2,11 +2,15 @@
   "name": "back",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "electron.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+<<<<<<< Updated upstream
       "start": "node src/index.ts"
+=======
+    "electron": "electron ."
+>>>>>>> Stashed changes
   },
   "keywords": [],
   "author": "",
@@ -15,10 +19,16 @@
     "express": "^5.2.1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.6.4",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3",
+    "jsonwebtoken": "^9.0.3",
     "typescript": "^7.0.2"
   }
 }

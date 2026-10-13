@@ -1,5 +1,13 @@
 import type { Request, Response } from 'express'
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt"
 import db from '../data/db.ts';
+
+type userType = {
+    username: string,
+    email: string
+    password: string,
+}
 
 export const getUsers = (req: Request, res: Response) => {
     const clients = db.prepare(`
@@ -112,4 +120,53 @@ export const getDashboard = (req: Request, res: Response) => {
     const clients = (db.prepare('SELECT COUNT(*) AS v FROM clients').get() as { v: number }).v
 
     res.json({ invoiced, paid, unpaid: invoiced - paid, clients })
+}
+
+export const register = async (req: Request, res: Response): Promise<void | Response> => {
+    const { username, password }: userType = req.body
+
+    const existUser = db.prepare('SELECT * FROM users WHERE username = ?').get(username)
+    if (existUser) { return res.status(401).json({ message: 'username already exists' }) }
+
+    const hashed: string = await bcrypt.hash(password, 10)
+    const newUser = db.prepare('INSERT INTO users (username, password) VALUES (?, ?)').run(username, hashed);
+
+    res.status(201).json({ message: 'user created' })
+}
+
+export const login = async (req: Request, res: Response): Promise<void | Response> => {
+    const { username, password }: userType = req.body
+
+    const user = db.prepare('SELECT * FROM users WHERE username = ?').get(username) as
+    | { id: number; email: string; password: string }
+    | undefined
+    if (!user) return res.status(401).json({ error: 'wrong username or password' })
+
+    const isMatch: boolean = await bcrypt.compare(password, user.password)
+    if (!isMatch) return res.status(401).json({ error: 'wrong username or password' })
+
+    const token: string = jwt.sign({ id: user.id }, 'secret', { expiresIn: '1d' })
+    res.json({ token })
+}
+
+export const getProfile = (req: Request, res: Response) => {
+    const profile = db.prepare('SELECT * FROM profile WHERE id = 1').get()
+    res.json(profile ?? {})
+}
+
+export const saveProfile = (req: Request, res: Response) => {
+    const { businessName, address, phone, nif, nis } = req.body
+
+    db.prepare(`
+        INSERT INTO profile (id, businessName, address, phone, nif, nis)
+        VALUES (1, ?, ?, ?, ?, ?)
+        ON CONFLICT(id) DO UPDATE SET
+            businessName = excluded.businessName,
+            address = excluded.address,
+            phone = excluded.phone,
+            nif = excluded.nif,
+            nis = excluded.nis
+    `).run(businessName ?? '', address ?? '', phone ?? '', nif ?? '', nis ?? '')
+
+    res.status(200).json({ message: 'profile saved' })
 }
