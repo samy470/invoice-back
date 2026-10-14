@@ -4,7 +4,6 @@ const db = new DatabaseSync('clients.db');
 
 db.exec(`CREATE TABLE IF NOT EXISTS clients (
     id INTEGER PRIMARY KEY,
-    userId INTEGER NOT NULL,
     name TEXT NOT NULL,
     email TEXT,
     phone TEXT,
@@ -15,7 +14,6 @@ db.exec(`CREATE TABLE IF NOT EXISTS clients (
 
 db.exec(`CREATE TABLE IF NOT EXISTS invoices (
     id INTEGER PRIMARY KEY,
-    userId INTEGER NOT NULL,
     invoiceNumber TEXT NOT NULL,
     clientId INTEGER NOT NULL,
     date TEXT,
