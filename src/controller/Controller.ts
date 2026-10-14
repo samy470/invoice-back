@@ -11,7 +11,7 @@ type userType = {
 
 export const getUsers = (req: Request, res: Response) => {
     const clients = db.prepare(`
-        SELECT clients.id, clients.name, clients.email, clients.phone, clients.taxId,
+        SELECT clients.id, clients.name, clients.email, clients.phone, clients.taxId, clients.statId
             COALESCE((
                 SELECT SUM(ii.qty * ii.price * (1 + inv.taxRate / 100.0))
                 FROM invoices inv
@@ -25,18 +25,18 @@ export const getUsers = (req: Request, res: Response) => {
 }
 
 export const addUsers = (req: Request, res: Response) => {
-    const { name, email, phone, taxId } = req.body
+    const { name, email, phone, taxId, statId } = req.body
 
-    const insert = db.prepare('INSERT INTO clients (name, email, phone, taxId) VALUES (?, ?, ?, ?)');
-    insert.run(name, email, phone, taxId);
+    const insert = db.prepare('INSERT INTO clients (name, email, phone, taxId, statId) VALUES (?, ?, ?, ?, ?)');
+    insert.run(name, email, phone, taxId, statId);
 
     res.status(201).json({ message: "user added" })
 }
 
 export const updateUsers = (req: Request, res: Response) => {
-    const { name, email, phone, taxId, id } = req.body
+    const { name, email, phone, taxId, statId, id } = req.body
 
-    db.prepare('UPDATE clients SET name = ?, email = ?, phone = ?, taxId = ? WHERE id = ?').run(name, email ?? null, phone ?? null, taxId ?? null, id)
+    db.prepare('UPDATE clients SET name = ?, email = ?, phone = ?, taxId = ?, statId WHERE id = ?').run(name, email ?? null, phone ?? null, taxId ?? null, statId ?? null id)
     res.status(201).json({ message: 'user updated' })
 }
 
