@@ -11,7 +11,7 @@ type userType = {
 
 export const getUsers = (req: Request, res: Response) => {
     const clients = db.prepare(`
-        SELECT clients.id, clients.name, clients.email, clients.phone, clients.taxId, clients.statId
+        SELECT clients.id, clients.name, clients.email, clients.phone, clients.taxId, clients.statId,
             COALESCE((
                 SELECT SUM(ii.qty * ii.price * (1 + inv.taxRate / 100.0))
                 FROM invoices inv
