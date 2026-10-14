@@ -36,7 +36,7 @@ export const addUsers = (req: Request, res: Response) => {
 export const updateUsers = (req: Request, res: Response) => {
     const { name, email, phone, taxId, statId, id } = req.body
 
-    db.prepare('UPDATE clients SET name = ?, email = ?, phone = ?, taxId = ?, statId = ? WHERE id = ?').run(name, email ?? null, phone ?? null, taxId ?? null, statId ?? null id)
+    db.prepare('UPDATE clients SET name = ?, email = ?, phone = ?, taxId = ?, statId = ? WHERE id = ?').run(name, email ?? null, phone ?? null, taxId ?? null, statId ?? null, id)
     res.status(201).json({ message: 'user updated' })
 }
 
